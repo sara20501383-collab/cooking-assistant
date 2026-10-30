@@ -23,11 +23,16 @@ def find_recipe(request):
             if needed.issubset(user_items):
                 results.append(recipe)
 
-        # ۲. اگر در دیتابیس پیدا نشد، هوش مصنوعی پیشنهاد می‌دهد
+        # ۲. اگر در دیتابیس نبود، هوش مصنوعی پیشنهاد می‌دهد
         if not results and user_input:
             try:
                 prompt = f"من این مواد غذایی را در خانه دارم: {user_input}. لطفاً یک دستور پخت ساده و خوشمزه که فقط با همین مواد قابل تهیه است، به من بده."
-                url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}"
+                
+                # ====== کلید API خود را اینجا بگذارید ======
+                API_KEY = "کلید_sk_خود_را_اینجا_بگذارید"
+                # ==========================================
+                
+                url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}?key={API_KEY}"
                 
                 response = requests.get(url, timeout=60)
                 if response.status_code == 200:
@@ -44,6 +49,5 @@ def find_recipe(request):
     })
 
 def menu(request):
-    # نمایش تمام غذاهای ذخیره شده در دیتابیس
     all_recipes = Recipe.objects.all()
     return render(request, 'kitchen/menu.html', {'recipes': all_recipes})
