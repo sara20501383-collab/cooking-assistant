@@ -31,7 +31,7 @@ def find_recipe(request):
         if not results and user_input:
             try:
                 # سرویس Pollinations
-                prompt = f"من این مواد را دارم: {user_input}. یک دستور پخت ساده و خوشمزه با همین مواد به من بده."
+                prompt = f"من این مواد غذایی را در خانه دارم: {user_input}. لطفاً یک دستور پخت ساده و خوشمزه که فقط با همین مواد قابل تهیه باشد، به من بده."
                 url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}?key=کلید_API_خودت" # اگر کلید داری
                 # یا بدون کلید:
                 url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}"
