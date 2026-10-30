@@ -2,8 +2,10 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <!-- این خط برای سازگاری با موبایل بسیار حیاتی است -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>دستیار آشپزی هوشمند</title>
+    
     <!-- فریم‌ورک بوت‌استرپ -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -12,34 +14,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
     
     <style>
-        /* تم رنگی صورتی و آبی آسمانی */
         body {
             font-family: 'Vazirmatn', Tahoma, sans-serif;
-            /* تصویر پس‌زمینه فانتزی + گرادیانت صورتی و آبی شفاف */
-            background: linear-gradient(135deg, rgba(255, 182, 193, 0.7), rgba(135, 206, 235, 0.7)), 
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.8), rgba(135, 206, 235, 0.8)), 
                         url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
-            padding-bottom: 50px;
+            padding: 15px; /* فاصله از لبه‌های صفحه در موبایل */
         }
         
-        /* تیتر اصلی با فونت لاله‌زار */
         .main-title {
             font-family: 'Lalezar', cursive;
-            font-size: 3.5rem;
+            font-size: 2.5rem; /* سایز مناسب برای موبایل */
             background: linear-gradient(45deg, #ff69b4, #00bfff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .main-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.2);
-            padding: 40px;
-            margin-top: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.2);
+            padding: 25px;
+            margin-top: 30px;
             backdrop-filter: blur(10px);
             border: 2px solid #fff;
         }
@@ -49,11 +48,7 @@
             border-radius: 15px;
             border-right: 6px solid #00bfff;
             box-shadow: 0 5px 15px rgba(0, 191, 255, 0.15);
-            transition: transform 0.3s ease;
-        }
-        .recipe-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
+            margin-bottom: 15px;
         }
 
         .ai-card {
@@ -61,43 +56,35 @@
             border-radius: 15px;
             border-right: 6px solid #ff69b4;
             box-shadow: 0 5px 15px rgba(255, 105, 180, 0.15);
+            margin-top: 20px;
         }
 
         .btn-custom {
             background: linear-gradient(45deg, #ff69b4, #00bfff);
             border: none;
             border-radius: 10px;
-            padding: 12px 30px;
-            font-weight: bold;
-            font-family: 'Vazirmatn', sans-serif;
-            transition: all 0.3s ease;
-        }
-        .btn-custom:hover {
-            background: linear-gradient(45deg, #00bfff, #ff69b4);
-            transform: scale(1.05);
-        }
-
-        .form-control {
-            border-radius: 10px;
             padding: 12px 20px;
-            border: 2px solid #e0e0e0;
-        }
-        .form-control:focus {
-            border-color: #ff69b4;
-            box-shadow: 0 0 0 0.25rem rgba(255, 105, 180, 0.25);
-        }
-
-        /* استایل برای عنوان غذاها در کارت‌ها */
-        .recipe-title {
-            font-family: 'Lalezar', cursive;
-            font-size: 1.8rem;
-            color: #00bfff;
+            font-weight: bold;
+            width: 100%; /* دکمه در موبایل تمام عرض می‌شود */
         }
         
-        .ai-title {
-            font-family: 'Lalezar', cursive;
-            font-size: 1.8rem;
-            color: #ff69b4;
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            margin-bottom: 10px; /* فاصله بین کادر و دکمه در موبایل */
+        }
+
+        .recipe-title { font-family: 'Lalezar', cursive; font-size: 1.5rem; color: #00bfff; }
+        .ai-title { font-family: 'Lalezar', cursive; font-size: 1.5rem; color: #ff69b4; }
+
+        /* استایل‌های اختصاصی برای دسکتاپ */
+        @media (min-width: 768px) {
+            body { padding: 0; }
+            .main-title { font-size: 3.5rem; }
+            .main-card { padding: 40px; margin-top: 50px; }
+            .btn-custom { width: auto; }
+            .form-control { margin-bottom: 0; }
         }
     </style>
 </head>
@@ -108,47 +95,51 @@
         <h1 class="text-center main-title">
             🍳 دستیار آشپزی هوشمند
         </h1>
-        <p class="text-center text-muted mb-4" style="font-size: 1.1rem;">مواد غذایی که در خانه دارید را وارد کنید تا بهترین دستور پخت را به شما پیشنهاد دهیم.</p>
+        <p class="text-center text-muted mb-4" style="font-size: 0.95rem;">مواد غذایی که در خانه دارید را وارد کنید.</p>
 
         <form method="post" class="mb-4">
             {% csrf_token %}
-            <div class="input-group">
-                <input type="text" name="ingredients" class="form-control" placeholder="مثلاً: تخم‌مرغ, گوجه, پیاز" value="{{ user_input }}" required>
-                <button class="btn btn-custom text-white" type="submit">جستجوی غذا</button>
+            <!-- استفاده از فرمت ریسپانسیو بوت‌استرپ برای موبایل و دسکتاپ -->
+            <div class="row g-2">
+                <div class="col-12 col-md-8">
+                    <input type="text" name="ingredients" class="form-control" placeholder="مثلاً: تخم‌مرغ، گوجه، پیاز" value="{{ user_input }}" required>
+                </div>
+                <div class="col-12 col-md-4">
+                    <button class="btn btn-custom text-white w-100" type="submit">جستجوی غذا</button>
+                </div>
             </div>
         </form>
 
         {% if user_input %}
             <hr class="my-4" style="border-color: #ffb6c1;">
-            <h5 class="mb-3 text-secondary">موادی که وارد کردید: <span class="text-dark">{{ user_input }}</span></h5>
+            <h6 class="mb-3 text-secondary">موادی که وارد کردید: <span class="text-dark">{{ user_input }}</span></h6>
 
             {% if results %}
-                <h5 class="text-primary mb-3">✅ غذاهای قابل پخت با این مواد:</h5>
+                <h6 class="text-primary mb-3">✅ غذاهای قابل پخت با این مواد:</h6>
                 <div class="row">
                     {% for recipe in results %}
-                        <div class="col-md-6 mb-3">
-                            <div class="recipe-card p-4">
-                                <h4 class="recipe-title mb-3">{{ recipe.title }}</h4>
-                                <p><strong>مواد لازم:</strong> {{ recipe.required_ingredients }}</p>
-                                <p><strong>دستور پخت:</strong><br> {{ recipe.steps|linebreaks }}</p>
+                        <div class="col-12 col-md-6">
+                            <div class="recipe-card p-3">
+                                <h4 class="recipe-title mb-2">{{ recipe.title }}</h4>
+                                <p class="mb-2" style="font-size: 0.9rem;"><strong>مواد لازم:</strong> {{ recipe.required_ingredients }}</p>
+                                <p class="mb-0" style="font-size: 0.9rem;"><strong>دستور پخت:</strong><br> {{ recipe.steps|linebreaks }}</p>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             {% elif not ai_recipe %}
-                <div class="alert alert-danger mt-4 text-center">
-                    ❌ متأسفانه با این مواد، غذایی پیدا نشد. <br>
-                    می‌توانید مواد بیشتری وارد کنید یا از پنل مدیریت دستور پخت جدید اضافه کنید.
+                <div class="alert alert-danger mt-4 text-center" style="font-size: 0.9rem;">
+                    ❌ متأسفانه با این مواد، غذایی پیدا نشد.
                 </div>
             {% endif %}
 
             {% if ai_recipe %}
-                <div class="ai-card p-4 mt-4">
-                    <h4 class="ai-title mb-3">✨ پیشنهاد هوش مصنوعی:</h4>
+                <div class="ai-card p-3">
+                    <h4 class="ai-title mb-2">✨ پیشنهاد هوش مصنوعی:</h4>
                     {% if ai_recipe.error %}
-                        <div class="alert alert-danger">{{ ai_recipe.error }}</div>
+                        <div class="alert alert-danger mb-0" style="font-size: 0.9rem;">{{ ai_recipe.error }}</div>
                     {% else %}
-                        <p style="white-space: pre-wrap; line-height: 1.8;">{{ ai_recipe.text }}</p>
+                        <p style="white-space: pre-wrap; line-height: 1.8; font-size: 0.9rem; margin-bottom: 0;">{{ ai_recipe.text }}</p>
                     {% endif %}
                 </div>
             {% endif %}
@@ -156,7 +147,6 @@
     </div>
 </div>
 
-<!-- اسکریپت بوت‌استرپ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
