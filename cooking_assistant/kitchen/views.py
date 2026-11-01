@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Recipe
 import requests
+import farsflow as ff
 
 def find_recipe(request):
     user_input = ""
@@ -16,33 +17,36 @@ def find_recipe(request):
         user_input = request.session['user_ingredients']
         user_items = set(item.strip() for item in user_input.replace('،', ',').split(',') if item.strip())
         
-        # ۱. جستجو در دیتابیس (حافظه)
+        # ۱. جستجو در دیتابیس
         all_recipes = Recipe.objects.all()
         for recipe in all_recipes:
             needed = set(item.strip() for item in recipe.required_ingredients.replace('،', ',').split(',') if item.strip())
             if needed.issubset(user_items):
                 results.append(recipe)
 
-        # ۲. اگر در دیتابیس نبود، هوش مصنوعی پیشنهاد می‌دهد
+        # ۲. اگر در دیتابیس نبود، از هوش مصنوعی (Pollinations) بپرس
         if not results and user_input:
             try:
                 prompt = f"""تو یک آشپز حرفه‌ای ایرانی هستی. من این مواد را در خانه دارم: {user_input}.
-یک دستور پخت کامل، خوشمزه و کاملاً روان به زبان فارسی بنویس که فقط با همین مواد (و نمک، روغن و آب) قابل تهیه باشد.
-لطفاً دستور پخت را با جزئیات کامل بنویس و از هیچ کلمه انگلیسی یا علامت ستاره (*) استفاده نکن.
+یک دستور پخت کامل، خوشمزه و با املای کاملاً صحیح فارسی بنویس که فقط با همین مواد (و نمک، روغن و آب) قابل تهیه باشد.
+لطفاً از نیم‌فاصله درست استفاده کن و حروف فارسی (ی و ک) را به کار ببر.
 جواب را دقیقاً در این قالب بنویس:
 نام غذا: [نام غذا]
 مواد لازم: [مواد لازم]
 دستور پخت: [مراحل کامل]
 """
-                # ====== کلید API خود را اینجا بگذارید ======
-                API_KEY = "sk_9ZyKYFQP6HMCgh9pJCmnbP9EvTTMaSw8"
-                # ==========================================
-                
-                url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}?key={API_KEY}"
+                url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}"
                 
                 response = requests.get(url, timeout=60)
                 if response.status_code == 200:
-                    ai_recipe = {"text": response.text}
+                    raw_text = response.text
+                    
+                    # ====== اصلاح خودکار متن فارسی با farsflow ======
+                    # این کتابخانه نیم‌فاصله، حروف عربی و فاصله‌های اضافی را اصلاح می‌کند
+                    cleaned_text = ff.clean(raw_text)
+                    # =================================================
+                    
+                    ai_recipe = {"text": cleaned_text}
                 else:
                     ai_recipe = {"error": f"خطا از سرور: {response.status_code}"}
             except Exception as e:
