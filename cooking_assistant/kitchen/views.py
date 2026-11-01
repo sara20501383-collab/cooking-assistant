@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Recipe
 import requests
-import farsflow as ff
+import re
 
 def find_recipe(request):
     user_input = ""
@@ -27,24 +27,29 @@ def find_recipe(request):
         # ۲. اتصال به هوش مصنوعی
         if not results and user_input:
             try:
-                # متن پرامپت با دقت نوشته شده تا هوش مصنوعی کلمه بی‌ربط نگوید
                 prompt = f"""تو یک آشپز حرفه‌ای ایرانی هستی. من این مواد را در خانه دارم: {user_input}.
 یک دستور پخت کامل، خوشمزه و با املای کاملاً صحیح فارسی بنویس که فقط با همین مواد (و نمک، روغن و آب) قابل تهیه باشد.
-لطفاً از نیم‌فاصله درست استفاده کن و حروف فارسی (ی و ک) را به کار ببر.
-جواب را دقیقاً در این قالب بنویس و از هیچ توضیح اضافه‌ای استفاده نکن:
+جواب را دقیقاً در این قالب بنویس:
 نام غذا: [نام غذا]
 مواد لازم: [مواد لازم]
 دستور پخت: [مراحل کامل]
 """
-                
                 url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}"
                 response = requests.get(url, timeout=60)
                 
                 if response.status_code == 200:
-                    # ====== اصلاح خودکار غلط‌های املایی با farsflow ======
-                    # این کتابخانه نیم‌فاصله و حروف عربی را اصلاح می‌کند
-                    cleaned_text = ff.clean(response.text)
-                    ai_recipe = {"text": cleaned_text}
+                    # ====== اصلاح خودکار غلط‌های املایی بدون کتابخانه اضافی ======
+                    text = response.text
+                    # تبدیل حروف عربی به فارسی
+                    text = text.replace('ي', 'ی').replace('ك', 'ک')
+                    # اصلاح نیم‌فاصله‌ها
+                    text = re.sub(r'\bمی\s+(\w+)', r'می‌\1', text)
+                    text = re.sub(r'\bنمی\s+(\w+)', r'نمی‌\1', text)
+                    text = re.sub(r'(\w+)\s+ها\b', r'\1‌ها', text)
+                    # حذف فاصله‌های اضافی
+                    text = re.sub(r'\s+', ' ', text).strip()
+                    
+                    ai_recipe = {"text": text}
                 else:
                     ai_recipe = {"error": f"خطا از سرور: {response.status_code}"}
                     
