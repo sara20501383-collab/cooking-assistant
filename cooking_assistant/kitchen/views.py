@@ -24,31 +24,30 @@ def find_recipe(request):
             if needed.issubset(user_items):
                 results.append(recipe)
 
-        # ۲. اگر در دیتابیس نبود، از هوش مصنوعی (Pollinations) بپرس
+        # ۲. اتصال به هوش مصنوعی
         if not results and user_input:
             try:
+                # متن پرامپت با دقت نوشته شده تا هوش مصنوعی کلمه بی‌ربط نگوید
                 prompt = f"""تو یک آشپز حرفه‌ای ایرانی هستی. من این مواد را در خانه دارم: {user_input}.
 یک دستور پخت کامل، خوشمزه و با املای کاملاً صحیح فارسی بنویس که فقط با همین مواد (و نمک، روغن و آب) قابل تهیه باشد.
 لطفاً از نیم‌فاصله درست استفاده کن و حروف فارسی (ی و ک) را به کار ببر.
-جواب را دقیقاً در این قالب بنویس:
+جواب را دقیقاً در این قالب بنویس و از هیچ توضیح اضافه‌ای استفاده نکن:
 نام غذا: [نام غذا]
 مواد لازم: [مواد لازم]
 دستور پخت: [مراحل کامل]
 """
-                url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}"
                 
+                url = f"https://text.pollinations.ai/{requests.utils.quote(prompt)}"
                 response = requests.get(url, timeout=60)
+                
                 if response.status_code == 200:
-                    raw_text = response.text
-                    
-                    # ====== اصلاح خودکار متن فارسی با farsflow ======
-                    # این کتابخانه نیم‌فاصله، حروف عربی و فاصله‌های اضافی را اصلاح می‌کند
-                    cleaned_text = ff.clean(raw_text)
-                    # =================================================
-                    
+                    # ====== اصلاح خودکار غلط‌های املایی با farsflow ======
+                    # این کتابخانه نیم‌فاصله و حروف عربی را اصلاح می‌کند
+                    cleaned_text = ff.clean(response.text)
                     ai_recipe = {"text": cleaned_text}
                 else:
                     ai_recipe = {"error": f"خطا از سرور: {response.status_code}"}
+                    
             except Exception as e:
                 ai_recipe = {"error": f"خطا: {str(e)}"}
 
